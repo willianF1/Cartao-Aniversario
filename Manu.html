@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animacao Cartao</title>
+
+  <style>
+    /* === ESTILO GERAL DA PÁGINA === */
+    body { 
+      display: flex; /* centraliza o cartão no centro da tela */
+      align-items: center; /* alinha verticalmente */
+      justify-content: center; /* alinha horizontalmente */
+      height: 150vh; /* altura da página (um pouco maior que a tela) */
+      background-color: rgba(168, 167, 167, 0.6); /* cor de fundo */
+    }
+
+    /* === CONTAINER DO CARTÃO === */
+    .birthdayCard {
+      position: relative; /* permite posicionar elementos dentro */
+      width: 250px;
+      height: 350px;
+      cursor: pointer; /* muda o cursor ao passar por cima */
+      transform-style: preserve-3d; /* habilita efeito 3D */
+      transform: perspective(2500px); /* profundidade do 3D */
+      transition: 4s; /* tempo da animação ao abrir o cartão */
+    }
+
+    /* EFEITO AO PASSAR O MOUSE SOBRE O CARTÃO */
+    .birthdayCard:hover {
+      transform: perspective(2500px) rotate(5deg); /* dá leve inclinação 3D */
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,.15),
+                  0 10px 100px rgba(0,0,0,0.3); /* sombra para destaque */
+    }
+
+    /* AO PASSAR O MOUSE, A FRENTE GIRA (ABRE O CARTÃO) */
+    .birthdayCard:hover .cardFront {
+      transform: rotateY(-160deg); /* gira a frente para mostrar o interior */
+    }
+
+    /* AO PASSAR O MOUSE, O TEXTO DA FRENTE SOME */
+    .birthdayCard:hover .front-text {
+      display: none;
+    }
+
+    /* AO PASSAR O MOUSE, REMOVE AS DECORAÇÕES DA FRENTE */
+    .birthdayCard:hover .wrap-deco {
+      display: none;
+    }
+    .birthdayCard:hover .wrap-decoTwo {
+      display: none;
+    }
+
+    /* AO PASSAR O MOUSE, REMOVE O BOLO DA FRENTE */
+    .birthdayCard:hover .plate {
+      display: none;
+    }
+
+    /* === FRENTE DO CARTÃO === */
+    .cardFront {
+      position: relative;
+      background-color: rgb(255, 246, 246); /* fundo branco-rosado */
+      width: 250px;
+      height: 350px;
+      overflow: hidden;
+      transform-origin: left; /* gira a partir do lado esquerdo */
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,.13),
+                  30px 0 50px rgba(0,0,0,0.1); /* sombra interna */
+      transition: .4s; /* animação da rotação */
+    }
+
+    /* === TEXTOS DA FRENTE === */
+    .happy, .toyou {
+      position: relative;
+      font-family: didot;
+      text-align: center;
+      backface-visibility: hidden; /* impede texto de aparecer ao girar */
+      font-size: 30px;
+    }
+    .happy { top: 198px; }
+    .toyou { top: 123px; }
+
+    .bday {
+      position: relative;
+      font-family: arial;
+      font-size: 30px;
+      text-align: center;
+      top: 163px;
+    }
+
+    /* === DECORAÇÕES DO CARTÃO (BANDEIRINHAS) === */
+    .wrap-deco {
+      position: absolute;
+      top: -230px;
+      left: -200px;
+    }
+
+    /* Círculo invisível que serve de base para as bandeirinhas */
+    .decorations {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      border: 3px solid #333;
+      border-radius: 50%;
+    }
+
+    /* Triângulos das bandeirinhas */
+    .decorations:before, 
+    .decorations:after, 
+    .decorationsTwo:before, 
+    .decorationsTwo:after, 
+    .decorationsThree:before, 
+    .decorationsThree:after {
+      content: "";
+      position: absolute;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      width: 0;
+      height: 0;
+    }
+
+    /* Cada pedaço das bandeirinhas com cores diferentes */
+    .decorations:before {
+      border-top: 40px solid #f15bb5;
+      top: 297px;
+      left: 210px;
+      transform: rotate(-5deg);
+    }
+    .decorations:after {
+      border-top: 40px solid #f4d35e;
+      top: 288px;
+      left: 260px;
+      transform: rotate(-17deg);
+    }
+    .decorationsTwo:before {
+      border-top: 40px solid #00f5d4;
+      top: 268px;
+      left: 315px;
+      transform: rotate(-30deg);
+    }
+    .decorationsTwo:after, .decorationsThree:after {
+      border-top: 40px solid #9b5de5;
+      top: 238px;
+      left: 355px;
+      transform: rotate(-40deg);
+    }
+
+    /* Espelha as bandeirinhas do outro lado */
+    .wrap-decoTwo {
+      transform: scaleX(-1);
+      position: absolute;
+      top: -230px;
+      left: 445px;
+    }
+    .decorationsThree:before {
+      border-top: 40px solid #00bbf9;
+      top: 268px;
+      left: 315px;
+      transform: rotate(-30deg);
+    }
+
+    /* === PRATO DO BOLO === */
+    .plate {
+      position: absolute;
+      width: 130px;
+      height: 5px;
+      background-color: #00bbf9;
+      left: 60px;
+      top: 213px;
+    }
+
+    /* === BOLO === */
+    .cake {
+      position: absolute;
+      overflow: hidden;
+      width: 100px;
+      height: 50px;
+      background-color: #f15bb5;
+      border-radius: 10px 10px 0 0;
+      top: -50px;
+      left: 15px;
+      box-shadow: inset 0 -15px #f9c74f, /* camada amarela */
+                  inset 0 15px #432818;  /* camada marrom (chocolate) */
+    }
+
+    /* Decoração do topo do bolo (listras) */
+    .cake:before {
+      content: "";
+      position: absolute;
+      background-color: #432818;
+      width: 10px;
+      height: 20px;
+      top: 5px;
+      border-radius: 20px;
+      box-shadow: 10px 5px #f15bb5, 20px 0px #432818, 
+                  30px 2px #f15bb5, 40px 5px #432818, 
+                  50px 5px #f15bb5, 60px 0px #432818, 
+                  70px 5px #f15bb5, 80px 5px #432818, 
+                  90px 5px #f15bb5;
+    }
+
+    /* Vela do bolo */
+    .plate:before {
+      content: "";
+      position: absolute;
+      background: repeating-linear-gradient(-45deg, #9b5de5, #9b5de5 3px, #00f5d4 3px, #00f5d4 6px);
+      width: 7px;
+      height: 25px;
+      top: -75px;
+      left: 61px;
+    }
+
+    /* Pavio da vela */
+    .plate:after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      height: 5px;
+      background-color: #333;
+      top: -80px;
+      left: 64px;
+    }
+
+    /* Chama da vela */
+    .flame {
+      position: absolute;
+      background-color: #fb5607;
+      border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+      transform: rotate(-45deg);
+      width: 15px;
+      height: 15px;
+      opacity: 0.7;
+      top: -93px;
+      left: 57px;
+    }
+
+    /* === PARTE INTERNA DO CARTÃO === */
+    .cardInside {
+      position: absolute;
+      background-color: #fff;
+      width: 250px;
+      height: 350px;
+      z-index: -1; /* fica atrás da frente */
+      left: 0;
+      top: 0;
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,0.2); /* sombra interna */
+    }
+
+    /* Texto interno */
+    .inside-text {
+      position: relative;
+      top: -160px;
+      transform: scale(0.7); /* reduz tamanho do texto */
+    }
+
+    /* Mensagem escrita dentro do cartão */
+    .wishes {
+      position: relative;
+      top: -100px;
+      margin: 25px;
+    }
+
+    .inside-image {
+  text-align: center; /* centraliza a imagem */
+  margin-top: -120px; /* sobe a imagem para ficar logo abaixo do texto */
+}
+
+.inside-image img {
+  width: 120px; /* tamanho da imagem (ajuste se quiser maior/menor) */
+  border-radius: 10px; /* cantos arredondados, opcional */
+}
+
+.inside-image img {
+  width: 50%;        /* ocupa toda a largura disponível do cartão */
+  max-width: 150px;   /* limite máximo para não estourar */
+  height: auto;       /* mantém a proporção da imagem */
+  border-radius: 10px; /* cantos arredondados, opcional */
+}
+
+
+    /* Estilo geral do texto */
+    p {
+      font-family: 'Brush Script MT';
+      color: #333;
+    }
+
+    /* Assinatura no canto direito */
+    .name {
+      margin-left: 150px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- === CARTÃO DE ANIVERSÁRIO === -->
+  <div class="birthdayCard">
+    
+    <!-- FRENTE DO CARTÃO -->
+    <div class="cardFront">
+      <div class="front-text">
+        <h3 class="happy">𝓕𝓮𝓵𝓲𝔃</h3>
+        <h2 class="bday">𝓐𝓷𝓲𝓿𝓮𝓻𝓼𝓪𝓻𝓲𝓸</h2>
+        <h3 class="toyou">𝓜𝓪𝓷𝓾!</h3>
+      </div>
+
+      <!-- Bandeirinhas -->
+      <div class="wrap-deco">
+        <div class="decorations"></div>
+        <div class="decorationsTwo"></div>
+      </div> 
+      <div class="wrap-decoTwo">
+        <div class="decorations"></div>
+        <div class="decorationsThree"></div>
+      </div>
+
+      <!-- Bolo -->
+      <div class="plate">
+        <div class="cake"></div>
+        <div class="flame"></div>
+      </div>
+    </div>  
+
+    <!-- PARTE INTERNA DO CARTÃO -->
+<div class="cardInside">
+  <div class="inside-text">
+    <h3 class="happy">𝓕𝓮𝓵𝓲𝔃</h3>
+    <h2 class="bday">𝓐𝓷𝓲𝓿𝓮𝓻𝓼𝓪𝓻𝓲𝓸</h2>
+    <h3 class="toyou">𝓜𝓪𝓷𝓾!😍🥰</h3> 
+  </div>
+
+  <!-- IMAGEM ABAIXO DO TEXTO -->
+  <div class="inside-image">
+    <img src="manuE.jpg">
+  </div>
+</div>
+    
+    </div>
+
+</body>
+</html>
