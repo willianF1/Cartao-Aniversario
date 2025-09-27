@@ -10,6 +10,51 @@
   background-size: 130px 130px; /* tamanho dos corações */
     }
 
+    .music {
+  position: absolute;
+  top: 0px;
+}
+
+  .music-container {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+
+  h2 {
+    color: #fff;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+  }
+
+  audio.music {
+    width: 300px;
+    height: 50px;
+    border-radius: 15px;
+    outline: none;
+    cursor: pointer;
+    background: red;
+  }
+
+  /* === Personalizando controles WebKit (Chrome/Edge/Opera) === */
+  audio.music::-webkit-media-controls-panel {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+  }
+
+  audio.music::-webkit-media-controls-play-button {
+    background-color: red !important; /* rosa claro */
+    border-radius: 50%;
+    margin: 5px;
+  }
+
+  audio.music::-webkit-media-controls-volume-slider {
+    filter: invert(1);
+  }
+
     /* === CONTAINER DO CARTÃO === */
     .birthdayCard {
       position: relative; /* permite posicionar elementos dentro */
